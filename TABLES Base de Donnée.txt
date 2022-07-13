@@ -1,0 +1,71 @@
+          /*** les entités et leurs relations ***/
+1. User
+   - username
+   - Email
+   - Password
+   - Role (Propriétaire ou locataire ou Admin )
+
+2. Habitat
+   - Titre
+   - Presentation
+   - Adresse
+   - Prix
+   - Superficie
+   - NombrePieces
+   - CapaciteAccueil
+   - DateOuvertureDu
+   - DateOuvertureAu
+   - FermetureExp
+   - HeureArriveeDu
+   - HeureArriveeAu
+   - HeureDepartDu
+   - HeureDepartAu
+   - lien Avec Users(propriétaire)(ManyToOne)
+   - lien Avec Destination(ManyToOne)
+   - lien Avec Catégorie(ManyToOne)
+   - lien Avec Service(ManyToMany)
+   - lien Avec Equipement(ManyToMany)
+
+3- Reservation
+   - DateArrivee
+   - DateDepart
+   - NombrePersonnes
+   - MontantTotal
+   - DateReservation
+   - Annulee
+   - lien Avec Users(locataire)(ManyToOne)
+   - lien Avec Habitat(ManyToOne)
+   
+4- Commentaire
+    - Contenu
+    - Date Commentaire
+    - Evaluation
+    - lien Avec Réservation(ManyToOne)
+
+5- Catégorie
+    -Nom
+
+6- Destination
+   - ville
+   - Departement
+   - pays
+
+7- Service
+   -Nom
+   -Description
+   
+8- Equipement
+   -Nom  
+
+9- Media
+    -Fichier
+    -lien Avec Habitat(ManyToOne)
+    -lien Avec User(OneToOne)
+    -lien Avec Categorie(OneToOne) 
+
+10- Notification 
+   -Objet
+   -message
+   -Emmeteur
+   -Recepteur
+

@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Tests\Unit\Reservation;
+
+
+use App\Entity\Commentaire;
+use App\Entity\User;
+use App\Entity\Habitat;
+use App\Entity\Reservation;
+use DateTime;
+use PHPUnit\Framework\TestCase;
+
+
+class ReservationTest extends TestCase {
+   
+    private Reservation $reserv;
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->reserv = new Reservation();
+    }
+
+    public function testGetDateArrivee(): void {
+        $value = new DateTime();
+
+        $response = $this->reserv->setDateArrivee($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertEquals($value,$this->reserv->getDateArrivee($value));
+
+    }
+    public function testGetDateDepart(): void {
+        $value = new DateTime();
+
+        $response = $this->reserv->setDateDepart($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertEquals($value,$this->reserv->getDateDepart($value));
+
+    }
+    public function testGetNombrePersonnes(): void {
+        $value = 7;
+
+        $response = $this->reserv->setNombrePersonnes($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertEquals($value,$this->reserv->getNombrePersonnes($value));
+
+    }
+    public function testGetMontantTotal(): void {
+        $value = 333.333;
+
+        $response = $this->reserv->setMontantTotal($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertEquals($value,$this->reserv->getMontantTotal($value));
+
+    }
+    public function testGetAnnulee(): void {
+        $value = false;
+
+        $response = $this->reserv->setAnnulee($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertEquals($value,$this->reserv->getAnnulee($value));
+
+    }
+   
+
+    public function testGetUser(): void {
+        $value = new User();
+
+        $response = $this->reserv->setUser($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertInstanceOf(User::class, $this->reserv->getUser($value));
+
+    }
+    public function testGetHabitat(): void {
+        $value = new Habitat();
+
+        $response = $this->reserv->setHabitat($value);
+
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertInstanceOf(Habitat::class, $this->reserv->getHabitat($value));
+    }
+    public function testGetCommentaires(): void {
+        $value = new Commentaire();
+        $response = $this->reserv->addCommentaire($value);
+
+        self::assertInstanceOf(Reservation::class, $response);
+        self::assertCount(1, $this->reserv->getCommentaires($value));
+    }
+ 
+
+}
