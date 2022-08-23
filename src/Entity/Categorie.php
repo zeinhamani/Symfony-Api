@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 #[ApiResource(
     normalizationContext: ['groups' => ['read:cat']],
+    denormalizationContext: ['groups' => ['write:cat']],
     collectionOperations: [
         
         "get",
@@ -46,7 +47,7 @@ class Categorie
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['read:Habitats','read:Habitat', 'write:Habitat','read:cat'])]
+    #[Groups(['write:cat','read:Habitats','read:Habitat','read:cat',])]
     private $nom;
 
     /**

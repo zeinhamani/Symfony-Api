@@ -11,6 +11,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
  * @ORM\Entity(repositoryClass=EquipementRepository::class)
  */
 #[ApiResource(
+    normalizationContext: ['groups' => ['read:Equipement']],
     collectionOperations: [
         "get",
         "post" => ["security" => "is_granted('ROLE_PROP')"],
@@ -23,7 +24,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
         ],
         
         'delete' => [
-            "security" => "is_granted('ROLE_ADMIN') ",
+            
             "security_message" => "Equipement peut supprimer seulement par l'Administration."
         ]
     ],
@@ -35,13 +36,21 @@ class Equipement
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['read:Equipement','read:Habitat'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['read:Habitat'])]
+    #[Groups(['read:Equipement','read:Habitat'])]
     private $nom;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Media::class, inversedBy="equipement", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    #[Groups(['read:Equipement','read:Habitat'])]
+    private $media;
 
     public function getId(): ?int
     {
@@ -56,6 +65,18 @@ class Equipement
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(Media $media): self
+    {
+        $this->media = $media;
 
         return $this;
     }

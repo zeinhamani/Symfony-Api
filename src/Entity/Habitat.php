@@ -17,6 +17,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * @ORM\Entity(repositoryClass=HabitatRepository::class)
  */
 #[ApiResource(
+    attributes: ["pagination_enabled" => false],
     normalizationContext: ['groups' => ['read:Habitats']],
     denormalizationContext: ['groups' => ['write:Habitat']],
     collectionOperations: [
@@ -38,8 +39,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
             "security_message" => "Vous n'étes pas le propriétaire vous pouvez pas supprimer."
         ]
     ],
-),
-ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'titre' => 'partial' ])]
+)]
+#[ApiFilter(SearchFilter::class, properties: [ 'prix' => 'partial','titre' => 'partial', 'presentation' => 'partial'])]
 class Habitat
 {
     /**
@@ -47,7 +48,7 @@ class Habitat
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:cat','read:Habitats','read:User','read:Reservations'])]
+    #[Groups(['read:cat','read:Habitats','read:User','read:Reservations','read:commentaires'])]
     private $id;
 
     /**
@@ -138,7 +139,7 @@ class Habitat
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="habitats")
      * @ORM\JoinColumn(nullable=false)
      */
-    #[Groups(['read:Habitat','write:Habitat', 'put:Habitat'])]
+    #[Groups(['read:Habitat','write:Habitat', 'put:Habitat','read:Reservations'])]
     private $user;
 
     /**
@@ -155,7 +156,7 @@ class Habitat
     private $services;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Equipement::class)
+     * @ORM\ManyToMany(targetEntity=Equipement::class,cascade={"persist"} )
      */
     #[Groups(['read:Habitat', 'put:Habitat', 'write:Habitat'])]
     private $equipements;
@@ -163,7 +164,7 @@ class Habitat
     /**
      * @ORM\OneToMany(targetEntity=Media::class, mappedBy="habitat", cascade={"persist"}, orphanRemoval=true)
      */
-    #[Groups(['read:Habitat', 'put:Habitat', 'write:Habitat','read:Reservations'])]
+    #[Groups(['read:Habitat','read:Habitats', 'put:Habitat','read:Reservations'])]
     private $medias;
 
     /**

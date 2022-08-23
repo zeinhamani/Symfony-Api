@@ -19,14 +19,13 @@ use App\Controller\UserController;
     normalizationContext: ['groups' => ['read:Users']],
     denormalizationContext: ['groups' => ['write:User']],
     collectionOperations: [
-        "get" =>  ["security" => "is_granted('ROLE_ADMIN')"],
-        "post"=> ['controller' => UserController::class], 
+        "get" , /*=>  ["security" => "is_granted('ROLE_ADMIN')"],*/
+        "post",
                 ],
     itemOperations: [
         'put' =>  [
             'denormalization_context' => ['groups' => ['put:User']],
             "security" => "is_granted('ROLE_LOC')",
-            'controller' => UserController::class
         ],
         'get' => [
             'normalization_context' => ['groups' => ['read:Users','read:User']],
@@ -40,13 +39,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:Reservations','read:Users','read:User'])]
+    #[Groups(['read:Habitats','read:Reservations','read:Users','read:User'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    #[Groups(['read:Reservations','read:Users','read:User', 'write:User',])]
+    #[Groups(['read:Habitat','read:Reservations','read:Users','read:User', 'write:User',])]
     private $email;
 
     /**
@@ -72,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToOne(targetEntity=Media::class, mappedBy="user", cascade={"persist", "remove"})
      */
-    #[Groups(['read:Reservations','read:Users','read:User', 'put:User', 'write:User'])]
+    #[Groups(['read:Reservations','read:Users','read:User', 'put:User','read:commentaires'])]
     private $media;
 
     /**
@@ -84,13 +83,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['read:Reservations','read:Users','read:User', 'write:User',])]
+    #[Groups(['read:Habitats','read:Reservations','read:Users','read:User', 'write:User',])]
     private $nom;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
+     */
+    #[Groups(['read:User'])]
+    private $notifications;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    #[Groups(['read:User','write:User','read:Habitat'])]
+    private $tel;
 
     public function __construct()
     {
         $this->habitats = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,6 +286,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTel(): ?int
+    {
+        return $this->tel;
+    }
+
+    public function setTel(?int $tel): self
+    {
+        $this->tel = $tel;
 
         return $this;
     }

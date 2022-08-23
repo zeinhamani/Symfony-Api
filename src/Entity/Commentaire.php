@@ -13,6 +13,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
  * @ORM\Entity(repositoryClass=CommentaireRepository::class)
  */
 #[ApiResource(
+    normalizationContext: ['groups' => ['read:commentaires']],
     attributes: ["security" => "is_granted('ROLE_USER')"],
     collectionOperations: [
         "get",
@@ -46,22 +47,26 @@ class Commentaire
     /**
      * @ORM\Column(type="text")
      */
+    #[Groups(['read:commentaires'])]
     private $Contenu;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
+    #[Groups(['read:commentaires'])]
     private $Evaluation;
 
     /**
      * @ORM\Column(type="date")
      */
+    #[Groups(['read:commentaires'])]
     private $DateCommentaire;
 
     /**
      * @ORM\ManyToOne(targetEntity=Reservation::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[Groups(['read:commentaires'])]
     private $reservation;
 
     public function __construct()

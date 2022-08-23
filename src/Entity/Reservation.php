@@ -45,7 +45,7 @@ class Reservation
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    #[Groups(['read:User','read:Reservations'])]
+    #[Groups(['read:User','read:Reservations','read:commentaires'])]
     private $id;
 
     /**
@@ -88,20 +88,26 @@ class Reservation
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
      * @ORM\JoinColumn(nullable=false)
      */
-    #[Groups(['read:Reservations', 'write:Reservation'])]
+    #[Groups(['read:Reservations', 'write:Reservation','read:commentaires'])]
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Habitat::class, inversedBy="reservations")
      * @ORM\JoinColumn(nullable=false)
      */
-    #[Groups(['read:Reservations', 'write:Reservation'])]
+    #[Groups(['read:Reservations', 'write:Reservation','read:commentaires'])]
     private $habitat;
      
     /**
      * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="reservation", orphanRemoval=true)
      */
     private $commentaires;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    #[Groups(['read:Reservations', 'write:Reservation'])]
+    private $stripeTokenId;
 
     public function __construct()
     {
@@ -237,6 +243,18 @@ class Reservation
                 $commentaire->setReservation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripeTokenId(): ?string
+    {
+        return $this->stripeTokenId;
+    }
+
+    public function setStripeTokenId(string $stripeTokenId): self
+    {
+        $this->stripeTokenId = $stripeTokenId;
 
         return $this;
     }
